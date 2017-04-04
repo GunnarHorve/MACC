@@ -29,6 +29,8 @@ sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)  # flush print output immedi
 
 # More interesting generator string: "3;7,44*49,73,35:1,159:4,95:13,35:13,159:11,95:10,159:14,159:6,35:6,95:6;12;"
 
+# <ServerQuitFromTimeUp timeLimitMs="30000"/>
+
 missionXML='''<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
             <Mission xmlns="http://ProjectMalmo.microsoft.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             
@@ -39,12 +41,7 @@ missionXML='''<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
               <ServerSection>
                 <ServerHandlers>
                   <FlatWorldGenerator generatorString="3;7,220*1,5*3,2;3;,biome_1"/>
-                  <ServerQuitFromTimeUp timeLimitMs="30000"/>
                   <ServerQuitWhenAnyAgentFinishes/>
-       
-
-
-
                 </ServerHandlers>
               </ServerSection>
               
@@ -110,7 +107,7 @@ while world_state.is_mission_running:
         print "Error:",error.text
 
     obs = json.loads( world_state.observations[-1].text )
-    print 'Position:',obs[u'XPos'],',',obs[u'YPos'],',',obs[u'ZPos'],'yaw',obs[u'Yaw']
+    print 'Position: ',obs[u'XPos'],',',obs[u'YPos'],',',obs[u'ZPos'],'\n Yaw: ',obs[u'Yaw'],'\n Pitch: ',obs[u'Pitch']
 
 print
 print "Mission ended"
