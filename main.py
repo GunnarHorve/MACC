@@ -1,15 +1,15 @@
 # ------------------------------------------------------------------------------------------------
 # Copyright (c) 2016 Microsoft Corporation
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 # associated documentation files (the "Software"), to deal in the Software without restriction,
 # including without limitation the rights to use, copy, modify, merge, publish, distribute,
 # sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in all copies or
 # substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
 # NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
 # NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
@@ -24,6 +24,7 @@ import os
 import sys
 import time
 import json
+from AgentWrapper import AgentWrapper
 
 sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)  # flush print output immediately
 
@@ -33,18 +34,18 @@ sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)  # flush print output immedi
 
 missionXML='''<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
             <Mission xmlns="http://ProjectMalmo.microsoft.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-            
+
               <About>
                 <Summary>Hello world!</Summary>
               </About>
-              
+
               <ServerSection>
                 <ServerHandlers>
                   <FlatWorldGenerator generatorString="3;7,220*1,5*3,2;3;,biome_1"/>
                   <ServerQuitWhenAnyAgentFinishes/>
                 </ServerHandlers>
               </ServerSection>
-              
+
               <AgentSection mode="Survival">
                 <Name>MalmoTutorialBot</Name>
                 <AgentStart/>
@@ -97,18 +98,10 @@ while not world_state.has_mission_begun:
 print
 print "Mission running ",
 
-# Loop until mission ends:
-while world_state.is_mission_running:
-    
-    sys.stdout.write(".")
+# Boilerplate code above this point
+
+agent = AgentWrapper(agent_host)
+while True:
     time.sleep(0.1)
-    world_state = agent_host.getWorldState()
-    for error in world_state.errors:
-        print "Error:",error.text
-
-    obs = json.loads( world_state.observations[-1].text )
-    print 'Position: ',obs[u'XPos'],',',obs[u'YPos'],',',obs[u'ZPos'],'\n Yaw: ',obs[u'Yaw'],'\n Pitch: ',obs[u'Pitch']
-
-print
-print "Mission ended"
-# Mission has ended.
+    agent.updateWorldPosition()
+    agent.printWorldPos()
