@@ -25,6 +25,7 @@ import sys
 import time
 import json
 from AgentWrapper import AgentWrapper
+import math
 
 sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)  # flush print output immediately
 
@@ -101,9 +102,27 @@ print "Mission running ",
 # Boilerplate code above this point
 
 agent = AgentWrapper(agent_host, 1)
-agent.setPosAccl(1,0,0)
+# agent.setPosAccl(0,0,0)
+Tx = 1; Ty = agent.y[0]; Tz = 1 #target's x, y, and z positions
+dt = 0.1                        # 1/number of updates/second
 while True:
     time.sleep(0.1)
     agent.updateWorldPosition()
     agent.physicsUpdate(0.1)
-    agent.printWorldDerivatives(1)
+
+    # kinda-sorta-control
+    pan_des  = math.atan2(Tx - agent.x[0], Tz - agent.z[0]) * 180. / math.pi
+    # tilt_des = math.atan2(Ty - agent.y[0], Tx - agent.x[0]) * 180. / math.pi
+
+    err_pan  = pan_des - agent.pan[0]
+
+    if(err_pan > 2):
+        agent.pan[1] = 0.1
+    elif(err_pan < -2):
+        agent.pan[1] =  -0.1
+    else:
+        agent.pan[1] = 0
+
+
+    print "{}, {}".format(pan_des, agent.pan[0]) #debug angle errors
+    # agent.printWorldDerivatives(1)         #debug position printing

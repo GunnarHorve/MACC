@@ -71,7 +71,6 @@ class AgentWrapper:
 
     def updateVel(self, dim, dt):
         ans = dim[1] + (dim[2] - self.b*dim[1])*dt  # vanilla
-        print self.b
         if(dim[2] == 0 and abs(ans) > abs(dim[1])): #see if friction stopped us
             ans = 0
         elif(ans > 1):                              # see if we're too fast
