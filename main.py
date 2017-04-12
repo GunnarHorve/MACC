@@ -100,8 +100,10 @@ print "Mission running ",
 
 # Boilerplate code above this point
 
-agent = AgentWrapper(agent_host)
+agent = AgentWrapper(agent_host, 1)
+agent.setPosAccl(1,0,0)
 while True:
     time.sleep(0.1)
     agent.updateWorldPosition()
-    agent.printWorldPos()
+    agent.physicsUpdate(0.1)
+    agent.printWorldDerivatives(1)
