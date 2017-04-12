@@ -103,26 +103,36 @@ print "Mission running ",
 
 agent = AgentWrapper(agent_host, 1)
 # agent.setPosAccl(0,0,0)
-Tx = 1; Ty = agent.y[0]; Tz = 1 #target's x, y, and z positions
+Tx = 0; Ty = agent.y[0]; Tz = 0 #target's x, y, and z positions
 dt = 0.1                        # 1/number of updates/second
 while True:
-    time.sleep(0.1)
+    time.sleep(0.05)
     agent.updateWorldPosition()
-    agent.physicsUpdate(0.1)
+    agent.physicsUpdate(0.05)
 
-    # kinda-sorta-control
-    pan_des  = math.atan2(Tx - agent.x[0], Tz - agent.z[0]) * 180. / math.pi
-    # tilt_des = math.atan2(Ty - agent.y[0], Tx - agent.x[0]) * 180. / math.pi
+    # negative because ???
+    pan_des  = -math.atan2(Tx - agent.x[0], Tz - agent.z[0]) * 180. / math.pi
 
-    err_pan  = pan_des - agent.pan[0]
+    # scale to -180..180
+    pan_cur = agent.pan[0]
+    if(pan_cur > 180):
+        pan_cur = pan_cur - 360
+    elif(pan_cur < -180):
+        pan_cur = pan_cur + 360
 
-    if(err_pan > 2):
-        agent.pan[1] = 0.1
-    elif(err_pan < -2):
-        agent.pan[1] =  -0.1
+    # print("Cur, Desired: {}, {}".format(pan_cur, pan_des))
+    reverse = 1
+    if(abs(pan_cur - pan_des) > 180):
+        reverse = -1
+
+    if(pan_cur - pan_des < -2):
+        agent.pan[1] = 0.1 * reverse
+    elif(pan_cur - pan_des > 2):
+        agent.pan[1] = -0.1 * reverse
     else:
-        agent.pan[1] = 0
+        agent.pan[1] = 0.0
 
+    #hi
 
-    print "{}, {}".format(pan_des, agent.pan[0]) #debug angle errors
-    # agent.printWorldDerivatives(1)         #debug position printing
+    # print "{}, {}".format(pan_des, agent.pan[0]) #debug angle errors
+    # agent.printWorldDerivatives(0)         #debug position printing

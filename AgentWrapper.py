@@ -33,6 +33,9 @@ class AgentWrapper:
         world_state = self.agent_host.getWorldState()
         for error in world_state.errors:
             print "Error:",error.text
+        if(not world_state.observations):
+            return
+            
         obs = json.loads( world_state.observations[-1].text )
 
         # save observations to class
