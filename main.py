@@ -43,6 +43,21 @@ missionXML='''<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
               <ServerSection>
                 <ServerHandlers>
                   <FlatWorldGenerator generatorString="3;7,220*1,5*3,2;3;,biome_1"/>
+                  <DrawingDecorator>
+                    <DrawBlock x="5" y="227" z="5" type="stone"/>
+                    <DrawBlock x="6" y="227" z="5" type="stone"/>
+                    <DrawBlock x="6" y="228" z="5" type="stone"/>
+                    <DrawBlock x="-5" y="227" z="-5" type="stone"/>
+                    <DrawBlock x="-6" y="227" z="-5" type="stone"/>
+                    <DrawBlock x="-6" y="228" z="-5" type="stone"/>
+                    <DrawBlock x="5" y="227" z="-5" type="stone"/>
+                    <DrawBlock x="6" y="227" z="-5" type="stone"/>
+                    <DrawBlock x="6" y="228" z="-5" type="stone"/>
+                    <DrawBlock x="-5" y="227" z="5" type="stone"/>
+                    <DrawBlock x="-6" y="227" z="5" type="stone"/>
+                    <DrawBlock x="-6" y="228" z="5" type="stone"/>
+                    <DrawBlock x="0" y="228" z="0" type="gold_block"/>
+                  </DrawingDecorator>
                   <ServerQuitWhenAnyAgentFinishes/>
                 </ServerHandlers>
               </ServerSection>
@@ -103,7 +118,7 @@ print "Mission running ",
 
 agent = AgentWrapper(agent_host, 1)
 # agent.setPosAccl(0,0,0)
-Tx = 0; Ty = agent.y[0]; Tz = 0 #target's x, y, and z positions
+Tx = 0; Ty = 228; Tz = 0 #target's x, y, and z positions
 dt = 0.1                        # 1/number of updates/second
 while True:
     time.sleep(0.05)
@@ -112,6 +127,7 @@ while True:
 
     # negative because ???
     pan_des  = -math.atan2(Tx - agent.x[0], Tz - agent.z[0]) * 180. / math.pi
+    tilt_des  = -math.atan2(Ty - agent.y[0], math.sqrt((Tx - agent.x[0])*(Tx - agent.x[0])+(Tz - agent.z[0])*(Tz - agent.z[0]))) * 180. / math.pi
 
     # scale to -180..180
     pan_cur = agent.pan[0]
@@ -131,6 +147,19 @@ while True:
         agent.pan[1] = -0.1 * reverse
     else:
         agent.pan[1] = 0.0
+
+    tilt_cur = agent.tilt[0]
+
+    if(tilt_cur - tilt_des < -2):
+        agent.tilt[1] = 0.1
+    elif(tilt_cur - tilt_des > 2):
+        agent.tilt[1] = -0.1
+    else:
+        agent.tilt[1] = 0.0
+
+
+    #print "agent.pan", agent.pan[1]
+    #print "pan_des", pan_des
 
     #hi
 
