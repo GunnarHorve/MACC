@@ -9,18 +9,6 @@
     <ServerHandlers>
       <FlatWorldGenerator generatorString="3;7,220*1,5*3,2;3;,biome_1"/>
       <DrawingDecorator>
-        <DrawBlock x="5" y="227" z="5" type="stone"/>
-        <DrawBlock x="6" y="227" z="5" type="stone"/>
-        <DrawBlock x="6" y="228" z="5" type="stone"/>
-        <DrawBlock x="-5" y="227" z="-5" type="stone"/>
-        <DrawBlock x="-6" y="227" z="-5" type="stone"/>
-        <DrawBlock x="-6" y="228" z="-5" type="stone"/>
-        <DrawBlock x="5" y="227" z="-5" type="stone"/>
-        <DrawBlock x="6" y="227" z="-5" type="stone"/>
-        <DrawBlock x="6" y="228" z="-5" type="stone"/>
-        <DrawBlock x="-5" y="227" z="5" type="stone"/>
-        <DrawBlock x="-6" y="227" z="5" type="stone"/>
-        <DrawBlock x="-6" y="228" z="5" type="stone"/>
         <DrawBlock x="0" y="228" z="0" type="gold_block"/>
       </DrawingDecorator>
       <ServerQuitWhenAnyAgentFinishes/>
@@ -29,7 +17,9 @@
 
   <AgentSection mode="Survival">
     <Name>MalmoTutorialBot</Name>
-    <AgentStart/>
+    <AgentStart>
+      <Placement x="0" y="230" z="-9" yaw="90"/>
+    </AgentStart>
     <AgentHandlers>
       <ObservationFromFullStats/>
       <ContinuousMovementCommands turnSpeedDegs="180"/>

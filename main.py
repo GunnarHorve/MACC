@@ -15,10 +15,32 @@ with open(mission_file, 'r') as f:
     mission_xml = f.read()
     my_mission = MalmoPython.MissionSpec(mission_xml, True)
 # add 20% holes for interest
-# for x in range(1,4):
-#     for z in range(1,13):
-#         if random.random()<0.1:
-#             my_mission.drawBlock( x,45,z,"lava")
+
+def drawRing(edge,type,elevation):
+    for r in range(-edge, edge+1):
+        my_mission.drawBlock(r, elevation, -edge, type)
+        my_mission.drawBlock(r, elevation, edge, type)
+        my_mission.drawBlock(edge, elevation, r, type)
+        my_mission.drawBlock(-edge, elevation, r, type)
+
+height = 227
+for i in range(5,30):
+    if(i%2 == 1):
+        drawRing(i, "stone_slab", height)
+    else:
+        drawRing(i, "stone", height)
+        height = height + 1
+
+# for x in range(-30,30):
+#     for y in range(227, 257):
+#         my_mission.drawBlock(x, y, -30, "stone")
+#         my_mission.drawBlock(x, y, 30, "stone")
+#         my_mission.drawBlock(-30, y, x, "stone")
+#         my_mission.drawBlock(30, y, x, "stone")
+
+# my_mission.drawBlock(-29, 227, 29, "stone_stairs")
+    # for z in range(-10,10):
+    #     my_mission.drawBlock( x,227.5,z,"stone_slab")
 # Create default Malmo objects:
 
 # connect to server
@@ -87,10 +109,26 @@ agent = AgentWrapper(agent_host, 1)
 Tx = 0; Ty = 227; Tz = 0 #target's x, y, and z positions
 dt = 0.05                        # 1/number of updates/second
 
+flag_1 = 0;
+flag_2 = 1;
+
 while True:
     time.sleep(dt)
     agent.updateWorldPosition()
     agent.physicsUpdate(dt)
-    P_Control(agent, .01)
+    P_Control(agent, .03)
+    agent_host.sendCommand("strafe 1")
+
+    flag_1 = flag_1 + 1
+
+    if flag_1 > 40:
+        flag_2 = flag_2*(-1)
+        flag_1 = 0
+
+    if flag_2 > 0:
+        agent_host.sendCommand("move 1")
+    else:
+        agent_host.sendCommand("move -1")
+
 
     # agent.printWorldDerivatives(0)         #debug position printing
