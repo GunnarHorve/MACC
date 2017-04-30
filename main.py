@@ -2,11 +2,16 @@ import MalmoPython
 import os
 import sys
 import time
-import json
+import cPickle as pickle
 from AgentWrapper import AgentWrapper
 import math
 
 sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)  # flush print output immediately
+
+tilts = [[], []] # desired, actual
+pans  = [[], []] # desired, actual
+times = [0]       # seconds
+t = 0
 
 # load the world
 mission_file = './drawMe.xml'
@@ -30,18 +35,6 @@ for i in range(5,30):
     else:
         drawRing(i, "stone", height)
         height = height + 1
-
-# for x in range(-30,30):
-#     for y in range(227, 257):
-#         my_mission.drawBlock(x, y, -30, "stone")
-#         my_mission.drawBlock(x, y, 30, "stone")
-#         my_mission.drawBlock(-30, y, x, "stone")
-#         my_mission.drawBlock(30, y, x, "stone")
-
-# my_mission.drawBlock(-29, 227, 29, "stone_stairs")
-    # for z in range(-10,10):
-    #     my_mission.drawBlock( x,227.5,z,"stone_slab")
-# Create default Malmo objects:
 
 # connect to server
 agent_host = MalmoPython.AgentHost()
@@ -105,8 +98,22 @@ def P_Control(agent, P):
     tilt_cur = agent.tilt[0]
     agent.tilt[1] = P * (tilt_des - tilt_cur)
 
+    saveData(tilt_des, tilt_cur, pan_des, pan_cur)
+
+def saveData(tilt_des, tilt_cur, pan_des, pan_cur):
+    print t
+    tilts[0].append(tilt_des)
+    tilts[1].append(tilt_cur)
+    pans[0].append(pan_des)
+    pans[1].append(pan_cur)
+    times.append(t)
+
+    pickle.dump(tilts, open("Test_Data/tilts.p", "wb"))
+    pickle.dump(pans, open("Test_Data/pans.p", "wb"))
+    pickle.dump(times, open("Test_Data/times.p", "wb"))
+
 agent = AgentWrapper(agent_host, 1)
-Tx = 0; Ty = 227; Tz = 0 #target's x, y, and z positions
+Tx = 0.5; Ty = 227; Tz = 0.5     #target's x, y, and z positions
 dt = 0.05                        # 1/number of updates/second
 
 flag_1 = 0;
@@ -114,6 +121,8 @@ flag_2 = 1;
 
 while True:
     time.sleep(dt)
+    t = t + dt
+
     agent.updateWorldPosition()
     agent.physicsUpdate(dt)
     P_Control(agent, .03)
@@ -129,6 +138,3 @@ while True:
         agent_host.sendCommand("move 1")
     else:
         agent_host.sendCommand("move -1")
-
-
-    # agent.printWorldDerivatives(0)         #debug position printing
